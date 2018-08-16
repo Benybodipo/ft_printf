@@ -27,15 +27,28 @@ char *ft_strdup(const char *str)
 	return (new);
 }
 
-void flags_slelctor(t_format *form, char **str)
+void flags_slector(t_format *form, const char **str)
 {
 	char flag;
-	
+	char c;
+
+	flag = 0;
 	while(is_in_str("+-0# ", *(*str)))
 	{
-
+		c = *(*str);
+		if (c == '+')
+			flag = '+';
+		else if (c == ' ' && flag !=  '+')
+			flag = ' ';
+		else if (c == '-')
+			flag = '-';
+		else if (c == '0' && flag != '-')
+			flag = '0';
+		else if (c == '#')
+			flag = '#';
 		(*str)++;
 	}
+	form->flag = flag;
 }
 char *preppend(char *tmp, char *to_insert)
 {
@@ -665,9 +678,7 @@ void handle_struct(const char **format, t_format *form, va_list ap)
 	while (*(*format) && !form->specifier)
 	{
 		if (is_in_str("+-0 #", *(*format)))
-		{
-			form->flag = *(*format);
-		}
+			flags_slector(form, format);
 		if (is_in_str(".", *(*format)))
 			dot = 1;
 		if (!dot && is_digit(*(*format)))
@@ -724,10 +735,8 @@ int	main()
 	wchar_t *str = L"Hola a todos";
 	wchar_t i = L'x';
 
-	ft_printf("|%15lS|\n", str);
-	ft_printf("|%15lS|\n", str);
-	ft_printf("%10lC\n", i);
-	printf("%10lC\n", i);
+	ft_printf("%15ls %05i\n", str, 23);
+	printf("%15ls %05i\n", str, 23);
 
 	return(0);
 }
