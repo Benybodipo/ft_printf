@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-// void add_prefix(char **tmp, char **str, char spec);
+
 char *ft_strdup(const char *str)
 {
 	int i;
@@ -27,6 +27,16 @@ char *ft_strdup(const char *str)
 	return (new);
 }
 
+void flags_slelctor(t_format *form, char **str)
+{
+	char flag;
+	
+	while(is_in_str("+-0# ", *(*str)))
+	{
+
+		(*str)++;
+	}
+}
 char *preppend(char *tmp, char *to_insert)
 {
 	char *new;
@@ -416,7 +426,8 @@ void get_pointer(char **tmp, void *ptr, t_format *form)
 		padding(tmp, pointer(p, form, len), form->width, form->flag, ' ');
 }
 
-/*---HANDLE WCHAR_T & WCHAR_T*-------*/
+/*=======HANDLE WCHAR_T & WCHAR_T=========*/
+
 int			ft_wcharlen(wchar_t wchar)
 {
 	if (wchar <= 0x7f)
@@ -457,62 +468,6 @@ size_t		ft_wbytelen(wchar_t *ws)
 	return (bytelen);
 }
 
-static int		ft_wchartostr_bis(char *s, wchar_t wc)
-{
-	if (wc < 0x800)
-	{
-		*(s++) = ((wc >> 6) & 0x1F) | 0xC0;
-		*(s++) = ((wc >> 0) & 0x3F) | 0x80;
-		return (2);
-	}
-	else if (wc < 0x10000)
-	{
-		*(s++) = ((wc >> 12) & 0xF) | 0xE0;
-		*(s++) = ((wc >> 6) & 0x3F) | 0x80;
-		*(s++) = ((wc >> 0) & 0x3F) | 0x80;
-		return (3);
-	}
-	else if (wc < 0x110000)
-	{
-		*(s++) = ((wc >> 18) & 0x7) | 0xF0;
-		*(s++) = ((wc >> 12) & 0x3F) | 0x80;
-		*(s++) = ((wc >> 6) & 0x3F) | 0x80;
-		*(s++) = ((wc >> 0) & 0x3F) | 0x80;
-		return (4);
-	}
-	return (0);
-}
-
-
-int		ft_putwchar_in_char(wchar_t wchar, char *fresh, int i)
-{
-	int		size;
-
-	size = ft_wcharlen(wchar);
-	if (size == 1)
-		fresh[i++] = wchar;
-	else if (size == 2)
-	{
-		fresh[i++] = (wchar >> 6) + 0xC0;
-		fresh[i++] = (wchar & 0x3F) + 0x80;
-	}
-	else if (size == 3)
-	{
-		fresh[i++] = (wchar >> 12) + 0xE0;
-		fresh[i++] = ((wchar >> 6) & 0x3F) + 0x80;
-		fresh[i++] = (wchar & 0x3F) + 0x80;
-	}
-	else
-	{
-		fresh[i++] = (wchar >> 18) + 0xF0;
-		fresh[i++] = ((wchar >> 12) & 0x3F) + 0x80;
-		fresh[i++] = ((wchar >> 6) & 0x3F) + 0x80;
-		fresh[i++] = (wchar & 0x3F) + 0x80;
-	}
-	return (i);
-}
-
-//================ NEW ===============//
 static int	wchar_utf8(wchar_t wc, char *convertion)
 {
 	int		len;
@@ -541,7 +496,7 @@ static int	wchar_utf8(wchar_t wc, char *convertion)
 	return (len);
 }
 
-static int	ft_putwchar(wchar_t wc)
+static int	ft_wchartochar(wchar_t wc)
 {
 	int		len;
 	char	tab[4];
@@ -550,31 +505,30 @@ static int	ft_putwchar(wchar_t wc)
 	return(tab[0]);
 }
 
-//================ NEW ===============//
-char	*ft_wchartostr(wchar_t *ws)
+char				*ft_wstrtostr(wchar_t *wstr)
 {
-	char	*fresh;
+	char	*new;
 	int		i;
-	int		k;
+	int		c;
 	int		len;
 
-	if (!ws)
+	if (!wstr)
 		return (0);
 	i = 0;
-	k = 0;
-	len = ft_wbytelen(ws);
-	if (!(fresh = (char*)malloc(len + 1 * (sizeof(char)))))
+	len = ft_wbytelen(wstr);
+	if (!(new = (char*)malloc(len + 1 * (sizeof(char)))))
 		return (NULL);
-	fresh[len] = '\0';
-	while (ws[k])
+	new[len] = '\0';
+	while (wstr && *wstr)
 	{
-		i = ft_putwchar_in_char(ws[k], fresh, i);
-		k++;
+		new[i] = ft_wchartochar(*wstr);
+		i++;
+		wstr++;
 	}
-	return (fresh);
+	return (new);
 }
 
-/*---HANDLE WCHAR_T & WCHAR_T*-------*/
+/*=======HANDLE WCHAR_T & WCHAR_T=========*/
 void handle_length(va_list ap, t_format *form, char **tmp)
 {
 	char spec;
@@ -599,14 +553,14 @@ void handle_length(va_list ap, t_format *form, char **tmp)
 	{
 
 		if (ft_strcmp("l", form->length))
-			c[0] = ft_putwchar(va_arg(ap, wchar_t));
+			c[0] = ft_wchartochar(va_arg(ap, wchar_t));
 		else
 			c[0] = ft_atoi(ft_uitoa_base(get_signed_num(ap, form), 10));
 		c[1] = '\0';
 		*tmp = c;
 	}
 	else if (is_in_str("sS",form->specifier) && ft_strcmp(form->length,"l"))
-		*tmp = ft_wchartostr(va_arg(ap, wchar_t*));
+		*tmp = ft_wstrtostr(va_arg(ap, wchar_t*));
 	else
 		*tmp = va_arg(ap, char *);
 }
@@ -770,8 +724,8 @@ int	main()
 	wchar_t *str = L"Hola a todos";
 	wchar_t i = L'x';
 
-	ft_printf("|%-15lS|\n", str);
-	ft_printf("|%-15lS|\n", str);
+	ft_printf("|%15lS|\n", str);
+	ft_printf("|%15lS|\n", str);
 	ft_printf("%10lC\n", i);
 	printf("%10lC\n", i);
 
