@@ -57,9 +57,7 @@ char *preppend(char *tmp, char *to_insert)
 
 static void print_char(char c, int specifier)
 {
-	if (is_in_str("scdxuoipb", specifier) && (c >= 65 && c <= 90))
-		c =  c + 32; // Lower case
-	else if (is_in_str("SCDXUO", specifier) && (c >= 97 && c <= 122))
+	if (is_in_str("SCDXUO", specifier) && (c >= 97 && c <= 122))
 		c =  c - 32; // Upper case
 	write(1, &c, 1);
 }
@@ -418,6 +416,165 @@ void get_pointer(char **tmp, void *ptr, t_format *form)
 		padding(tmp, pointer(p, form, len), form->width, form->flag, ' ');
 }
 
+/*---HANDLE WCHAR_T & WCHAR_T*-------*/
+int			ft_wcharlen(wchar_t wchar)
+{
+	if (wchar <= 0x7f)
+		return (1);
+	else if (wchar <= 0x7ff)
+		return (2);
+	else if (wchar <= 0xffff)
+		return (3);
+	else
+		return (4);
+}
+
+size_t		ft_wstrlen(wchar_t *ws)
+{
+	size_t	len;
+
+	len = 0;
+	if (!ws)
+		return (0);
+	while (*(ws++))
+		len++;
+	return (len);
+}
+
+size_t		ft_wbytelen(wchar_t *ws)
+{
+	size_t	len;
+	size_t	bytelen;
+
+	len = ft_wstrlen(ws);
+	bytelen = 0;
+	while (len > 0)
+	{
+		bytelen += ft_wcharlen(*ws);
+		ws++;
+		len--;
+	}
+	return (bytelen);
+}
+
+static int		ft_wchartostr_bis(char *s, wchar_t wc)
+{
+	if (wc < 0x800)
+	{
+		*(s++) = ((wc >> 6) & 0x1F) | 0xC0;
+		*(s++) = ((wc >> 0) & 0x3F) | 0x80;
+		return (2);
+	}
+	else if (wc < 0x10000)
+	{
+		*(s++) = ((wc >> 12) & 0xF) | 0xE0;
+		*(s++) = ((wc >> 6) & 0x3F) | 0x80;
+		*(s++) = ((wc >> 0) & 0x3F) | 0x80;
+		return (3);
+	}
+	else if (wc < 0x110000)
+	{
+		*(s++) = ((wc >> 18) & 0x7) | 0xF0;
+		*(s++) = ((wc >> 12) & 0x3F) | 0x80;
+		*(s++) = ((wc >> 6) & 0x3F) | 0x80;
+		*(s++) = ((wc >> 0) & 0x3F) | 0x80;
+		return (4);
+	}
+	return (0);
+}
+
+
+int		ft_putwchar_in_char(wchar_t wchar, char *fresh, int i)
+{
+	int		size;
+
+	size = ft_wcharlen(wchar);
+	if (size == 1)
+		fresh[i++] = wchar;
+	else if (size == 2)
+	{
+		fresh[i++] = (wchar >> 6) + 0xC0;
+		fresh[i++] = (wchar & 0x3F) + 0x80;
+	}
+	else if (size == 3)
+	{
+		fresh[i++] = (wchar >> 12) + 0xE0;
+		fresh[i++] = ((wchar >> 6) & 0x3F) + 0x80;
+		fresh[i++] = (wchar & 0x3F) + 0x80;
+	}
+	else
+	{
+		fresh[i++] = (wchar >> 18) + 0xF0;
+		fresh[i++] = ((wchar >> 12) & 0x3F) + 0x80;
+		fresh[i++] = ((wchar >> 6) & 0x3F) + 0x80;
+		fresh[i++] = (wchar & 0x3F) + 0x80;
+	}
+	return (i);
+}
+
+//================ NEW ===============//
+static int	wchar_utf8(wchar_t wc, char *convertion)
+{
+	int		len;
+
+	len = 0;
+	if (wc <= 0xFF)
+		convertion[len++] = wc;
+	else if (wc < 0x0800)
+	{
+		convertion[len++] = ((wc >> 6) & 0x1F) | 0xC0;
+		convertion[len++] = ((wc >> 0) & 0x3F) | 0x80;
+	}
+	else if (wc < 0x010000)
+	{
+		convertion[len++] = ((wc >> 12) & 0x0F) | 0xE0;
+		convertion[len++] = ((wc >> 6) & 0x3F) | 0x80;
+		convertion[len++] = ((wc >> 0) & 0x3F) | 0x80;
+	}
+	else if (wc < 0x110000)
+	{
+		convertion[len++] = ((wc >> 18) & 0x07) | 0xF0;
+		convertion[len++] = ((wc >> 12) & 0x3F) | 0x80;
+		convertion[len++] = ((wc >> 6) & 0x3F) | 0x80;
+		convertion[len++] = ((wc >> 0) & 0x3F) | 0x80;
+	}
+	return (len);
+}
+
+static int	ft_putwchar(wchar_t wc)
+{
+	int		len;
+	char	tab[4];
+
+	len = wchar_utf8(wc, tab);
+	return(tab[0]);
+}
+
+//================ NEW ===============//
+char	*ft_wchartostr(wchar_t *ws)
+{
+	char	*fresh;
+	int		i;
+	int		k;
+	int		len;
+
+	if (!ws)
+		return (0);
+	i = 0;
+	k = 0;
+	len = ft_wbytelen(ws);
+	if (!(fresh = (char*)malloc(len + 1 * (sizeof(char)))))
+		return (NULL);
+	fresh[len] = '\0';
+	while (ws[k])
+	{
+		i = ft_putwchar_in_char(ws[k], fresh, i);
+		k++;
+	}
+	return (fresh);
+}
+
+/*---HANDLE WCHAR_T & WCHAR_T*-------*/
 void handle_length(va_list ap, t_format *form, char **tmp)
 {
 	char spec;
@@ -438,12 +595,18 @@ void handle_length(va_list ap, t_format *form, char **tmp)
 		*tmp = ft_uitoa_base(get_signed_num(ap, form), get_base(form->specifier));
 	else if (is_in_str("p", spec))
 		get_pointer(tmp, va_arg(ap, void *), form);
-	else if (is_in_str("c", spec))
+	else if (is_in_str("cC", spec))
 	{
-		c[0] = ft_atoi(ft_uitoa_base(get_signed_num(ap, form), 10));
+
+		if (ft_strcmp("l", form->length))
+			c[0] = ft_putwchar(va_arg(ap, wchar_t));
+		else
+			c[0] = ft_atoi(ft_uitoa_base(get_signed_num(ap, form), 10));
 		c[1] = '\0';
 		*tmp = c;
 	}
+	else if (is_in_str("sS",form->specifier) && ft_strcmp(form->length,"l"))
+		*tmp = ft_wchartostr(va_arg(ap, wchar_t*));
 	else
 		*tmp = va_arg(ap, char *);
 }
@@ -604,8 +767,13 @@ void ft_printf(const char* format, ...)
 int	main()
 {
 	int num = -34563626;
+	wchar_t *str = L"Hola a todos";
+	wchar_t i = L'x';
 
-	ft_printf("|%-012i|\n", num);
-	printf("|%-012i|\n", num);
+	ft_printf("|%-15lS|\n", str);
+	ft_printf("|%-15lS|\n", str);
+	ft_printf("%10lC\n", i);
+	printf("%10lC\n", i);
+
 	return(0);
 }
