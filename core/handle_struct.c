@@ -34,6 +34,31 @@ void flags_slector(t_format *form, const char **str)
 	form->flag = flag;
 }
 
+char *get_num(const char **str, int *dot)
+{
+	int  i;
+	char *tmp;
+
+	i = 0;
+	while(is_digit(*(*str)))
+	{
+		(*str)++;
+		i++;
+	}
+	tmp = (char *)malloc(sizeof(char) * (i + 1));
+	*str -= i;
+	i = 0;
+	while (is_digit(*(*str)))
+	{
+		tmp[i] = *(*str);
+		(*str)++;
+		if (*(*str) == '.')
+			(*dot) = 1;
+		i++;
+	}
+	tmp[i] = '\0';
+	return (tmp);
+}
 void handle_struct(const char **format, t_format *form, va_list ap)
 {
 	int percent;
