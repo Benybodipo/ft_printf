@@ -1,16 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_digit.c                                         :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/08/17 11:59:42 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/17 11:59:44 by besteba          ###   ########.fr       */
+/*   Created: 2018/08/17 12:37:22 by besteba           #+#    #+#             */
+/*   Updated: 2018/08/17 12:37:24 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int is_digit(int c)
+char *ft_strdup(const char *str)
 {
-	return ((c >= 48 && c <= 57) ? 1 : 0);
+	int i;
+	char *new;
+
+	new = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
+	i = -1;
+	while (str[++i])
+	{
+		new[i] = str[i];
+	}
+	new[i] = '\0';
+	return (new);
 }

@@ -50,13 +50,13 @@ void flags_slector(t_format *form, const char **str)
 	}
 	form->flag = flag;
 }
+
 char *preppend(char *tmp, char *to_insert)
 {
 	char *new;
 	char *str;
 	int len;
 	int i;
-
 
 	str = ft_strdup(tmp);
 	len = ft_strlen(str) + ft_strlen(to_insert);
@@ -81,7 +81,7 @@ char *preppend(char *tmp, char *to_insert)
 static void print_char(char c, int specifier)
 {
 	if (is_in_str("SCDXUO", specifier) && (c >= 97 && c <= 122))
-		c =  c - 32; // Upper case
+		c =  c - 32;
 	write(1, &c, 1);
 }
 
@@ -93,6 +93,7 @@ static void print_str(char *str, int specifier)
 		str++;
 	}
 }
+
 static void padding_right(char **tmp, char *from, int width, char c)
 {
 	int i;
@@ -342,6 +343,7 @@ intmax_t get_signed_num(va_list args, t_format *form)
 	return (num);
 }
 
+
 int ft_atoi(char *str)
 {
 	int				i;
@@ -380,6 +382,7 @@ int get_base(char c)
 		return (2);
 	return (10);
 }
+
 
 char *pointer(char *pointer, t_format *form, int len)
 {
@@ -542,6 +545,7 @@ char				*ft_wstrtostr(wchar_t *wstr)
 }
 
 /*=======HANDLE WCHAR_T & WCHAR_T=========*/
+
 void handle_length(va_list ap, t_format *form, char **tmp)
 {
 	char spec;
@@ -564,7 +568,6 @@ void handle_length(va_list ap, t_format *form, char **tmp)
 		get_pointer(tmp, va_arg(ap, void *), form);
 	else if (is_in_str("cC", spec))
 	{
-
 		if (ft_strcmp("l", form->length))
 			c[0] = ft_wchartochar(va_arg(ap, wchar_t));
 		else
@@ -663,7 +666,7 @@ void handle_format(t_format *form, va_list ap)
 	if (form->width && form->flag != '0')
 		padding(&tmp, str, form->width, form->flag, ' ');
 	if (form->flag == ' ' && is_in_str("xXuUoOpidD", form->specifier))
-		write(1, " ", 1);
+		write(1, " ", 1); //Create a function to add a space
 	print_str(tmp, form->specifier);
 	str = NULL;
 }

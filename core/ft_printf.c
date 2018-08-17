@@ -15,19 +15,24 @@
 void ft_printf(const char* format, ...)
 {
   va_list args;
-	t_format form = {0};
+	t_format form;
 
   va_start(args, format);
 	while (*format)
 	{
 		if (*format == '%' && *(format + 1) != '%')
 		{
+			reset_struct(&form);
 			format++;
 			handle_struct(&format, &form, args);
 		}
 		else
-			ft_putchar(*format);
-		format++;
+		{
+			if(*format == '%' && *(format + 1) == '%')
+				format++;
+			write(1, &(*format), 1);
+			format++;
+		}
 	}
   va_end(args);
 }
