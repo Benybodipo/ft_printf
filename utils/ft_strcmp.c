@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int ft_strcmp(char *str1, char *str2)
+#include "ft_printf.h"
+
+int		ft_strcmp(char *str1, char *str2)
 {
 	while (*str1 && *str2 && (*str1 == *str2))
 	{

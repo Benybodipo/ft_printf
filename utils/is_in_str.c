@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int is_in_str(char *str,int c)
+#include "ft_printf.h"
+
+int		is_in_str(char *str, int c)
 {
 	while (*str)
 	{

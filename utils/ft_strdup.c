@@ -10,10 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-char *ft_strdup(const char *str)
+#include "ft_printf.h"
+
+char		*ft_strdup(const char *str)
 {
-	int i;
-	char *new;
+	int		i;
+	char	*new;
 
 	new = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
 	i = -1;

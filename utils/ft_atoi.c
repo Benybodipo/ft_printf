@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 
-int ft_atoi(char *str)
+int		ft_atoi(char *str)
 {
 	int				i;
 	long long int	result;
