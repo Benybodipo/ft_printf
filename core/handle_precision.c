@@ -6,20 +6,21 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:29:00 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/17 12:29:01 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/18 12:44:01 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 
-void handle_precision(t_format *form, char **tmp)
+void	handle_precision(t_format *form, char **tmp)
 {
+	char	*str;
+	int		i;
+
 	if (is_in_str("sS", form->specifier))
 	{
 		if (form->precision < ft_strlen(*tmp))
 		{
-			char *str;
-			int i;
-
 			str = (char *)malloc(sizeof(char) * (ft_strlen(*tmp) + 1));
 			i = 0;
 			while (*(*tmp) && i < form->precision)

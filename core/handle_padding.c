@@ -6,15 +6,17 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:31:10 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/17 12:31:12 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/18 12:19:15 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-static void padding_right(char **tmp, char *from, int width, char c)
+#include "ft_printf.h"
+
+static void		padding_right(char **tmp, char *from, int width, char c)
 {
-	int i;
-	char *str;
-	char *temp;
+	int		i;
+	char	*str;
+	char	*temp;
 
 	i = 0;
 	temp = ft_strdup(from);
@@ -36,10 +38,10 @@ static void padding_right(char **tmp, char *from, int width, char c)
 	free(str);
 }
 
-static void padding_left(char **tmp, char *from, int width, char c)
+static void		padding_left(char **tmp, char *from, int width, char c)
 {
-	int i;
-	char *str;
+	int		i;
+	char	*str;
 
 	i = 0;
 	width = (width >= ft_strlen(from)) ? width : ft_strlen(from);
@@ -60,14 +62,14 @@ static void padding_left(char **tmp, char *from, int width, char c)
 	free(str);
 }
 
-static void padding(char **tmp, char *str, unsigned int width, char simbol, char c)
+static void		padding(char **tmp, char *str, int width, char simbol, char c)
 {
 	int len;
 
 	if (width <= ft_strlen(str))
 		*tmp = str;
 	else if (simbol == '-')
-		padding_left(tmp, str,  width, c);
+		padding_left(tmp, str, width, c);
 	else if (!simbol || is_in_str("+#0 ", simbol))
-		padding_right(tmp, str,  width, c);
+		padding_right(tmp, str, width, c);
 }

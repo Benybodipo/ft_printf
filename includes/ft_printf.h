@@ -50,7 +50,7 @@ char				*get_length(const char **str);
 void				handle_length(va_list ap, t_format *form, char **tmp);
 static void 		padding_right(char **tmp, char *from, int width, char c);
 static void			padding_left(char **tmp, char *from, int width, char c);
-static void			padding(char **tmp, char *str, unsigned int width, char simbol, char c);
+static void			padding(char **tmp, char *str, int width, char simbol, char c);
 char				*pointer(char *pointer, t_format *form, int len);
 void				get_pointer(char **tmp, void *ptr, t_format *form);
 void				handle_precision(t_format *form, char **tmp);

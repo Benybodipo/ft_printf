@@ -6,50 +6,11 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:06:25 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/17 12:06:30 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/18 13:02:14 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-int			ft_wcharlen(wchar_t wchar)
-{
-	if (wchar <= 0x7f)
-		return (1);
-	else if (wchar <= 0x7ff)
-		return (2);
-	else if (wchar <= 0xffff)
-		return (3);
-	else
-		return (4);
-}
-
-size_t		ft_wstrlen(wchar_t *ws)
-{
-	size_t	len;
-
-	len = 0;
-	if (!ws)
-		return (0);
-	while (*(ws++))
-		len++;
-	return (len);
-}
-
-size_t		ft_wbytelen(wchar_t *ws)
-{
-	size_t	len;
-	size_t	bytelen;
-
-	len = ft_wstrlen(ws);
-	bytelen = 0;
-	while (len > 0)
-	{
-		bytelen += ft_wcharlen(*ws);
-		ws++;
-		len--;
-	}
-	return (bytelen);
-}
+#include "ft_printf.h"
 
 static int	wchar_utf8(wchar_t wc, char *convertion)
 {
@@ -85,10 +46,10 @@ static int	ft_wchartochar(wchar_t wc)
 	char	tab[4];
 
 	len = wchar_utf8(wc, tab);
-	return(tab[0]);
+	return (tab[0]);
 }
 
-char	*ft_wstrtostr(wchar_t *wstr)
+char		*ft_wstrtostr(wchar_t *wstr)
 {
 	char	*new;
 	int		i;

@@ -6,11 +6,13 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:27:26 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/17 12:27:28 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/18 12:15:05 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-uintmax_t get_unsigned_num(va_list args, t_format *form)
+#include "ft_printf.h"
+
+uintmax_t		get_unsigned_num(va_list args, t_format *form)
 {
 	uintmax_t num;
 
@@ -22,7 +24,7 @@ uintmax_t get_unsigned_num(va_list args, t_format *form)
 	else if (ft_strcmp(form->length, "h"))
 		num = (unsigned short int)num;
 	else if (ft_strcmp(form->length, "l"))
-		num = (unsigned long int )num;
+		num = (unsigned long int)num;
 	else if (ft_strcmp(form->length, "ll"))
 		num = (unsigned long long int)num;
 	else if (ft_strcmp(form->length, "j"))
@@ -34,7 +36,7 @@ uintmax_t get_unsigned_num(va_list args, t_format *form)
 	return (num);
 }
 
-intmax_t get_signed_num(va_list args, t_format *form)
+intmax_t		get_signed_num(va_list args, t_format *form)
 {
 	intmax_t num;
 
@@ -46,7 +48,7 @@ intmax_t get_signed_num(va_list args, t_format *form)
 	else if (ft_strcmp(form->length, "h"))
 		num = (short int)num;
 	else if (ft_strcmp(form->length, "l"))
-		num = (long int )num;
+		num = (long int)num;
 	else if (ft_strcmp(form->length, "ll"))
 		num = (long long int)num;
 	else if (ft_strcmp(form->length, "j"))
@@ -58,11 +60,12 @@ intmax_t get_signed_num(va_list args, t_format *form)
 	return (num);
 }
 
-char *get_length(const char **str)
+char			*get_length(const char **str)
 {
-	int i;
-	int j;
-	char *len;
+	int		i;
+	int		j;
+	char	*len;
+
 	i = 0;
 	while (is_in_str("hljz", *(*str)))
 	{
@@ -82,24 +85,30 @@ char *get_length(const char **str)
 	return (len);
 }
 
-void handle_length(va_list ap, t_format *form, char **tmp)
+void			handle_is_negative(va_list ap, t_format *form, char **tmp)
+{
+	char spec;
+
+	spec = form->specifier;
+	*tmp = ft_itoa_base(get_signed_num(ap, form), get_base(spec));
+	if (*(*tmp) == '-')
+	{
+		(*tmp)++;
+		form->is_negative = 1;
+	}
+}
+
+void			handle_length(va_list ap, t_format *form, char **tmp)
 {
 	char spec;
 	char *len;
 	char c[2];
 
 	spec = form->specifier;
-	if (is_in_str("dDi",  spec))
-	{
-		*tmp = ft_itoa_base(get_signed_num(ap, form), get_base(form->specifier));
-		if (*(*tmp) == '-')
-		{
-			(*tmp)++;
-			form->is_negative = 1;
-		}
-	}
+	if (is_in_str("dDi", spec))
+		handle_is_negative(ap, form, tmp);
 	else if (is_in_str("uoOxXb", spec))
-		*tmp = ft_uitoa_base(get_signed_num(ap, form), get_base(form->specifier));
+		*tmp = ft_uitoa_base(get_signed_num(ap, form), get_base(spec));
 	else if (is_in_str("p", spec))
 		get_pointer(tmp, va_arg(ap, void *), form);
 	else if (is_in_str("cC", spec))
@@ -111,7 +120,7 @@ void handle_length(va_list ap, t_format *form, char **tmp)
 		c[1] = '\0';
 		*tmp = c;
 	}
-	else if (is_in_str("sS",form->specifier) && ft_strcmp(form->length,"l"))
+	else if (is_in_str("sS", form->spec) && ft_strcmp(form->length, "l"))
 		*tmp = ft_wstrtostr(va_arg(ap, wchar_t*));
 	else
 		*tmp = va_arg(ap, char *);

@@ -6,20 +6,22 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:08:45 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/17 12:08:47 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/18 12:37:06 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char *pointer(char *pointer, t_format *form, int len)
+#include "ft_printf.h"
+
+char		*pointer(char *pointer, t_format *form, int len)
 {
-	char *str;
-	int i;
-	int width;
-	int precision;
+	char	*str;
+	int		i;
+	int		width;
+	int		precision;
 
 	precision = (form->precision > len) ? form->precision : len;
 	width = (form->width && !form->precision) ? form->width : precision;
-	str =  malloc(sizeof(char) * (1 + len));
+	str = malloc(sizeof(char) * 1 + len);
 	str[0] = '0';
 	str[1] = 'x';
 	i = 2;
@@ -40,12 +42,13 @@ char *pointer(char *pointer, t_format *form, int len)
 	str[i] = '\0';
 	return (str);
 }
-void get_pointer(char **tmp, void *ptr, t_format *form)
+
+void		get_pointer(char **tmp, void *ptr, t_format *form)
 {
 	unsigned long	j;
-	char		lst[16];
-	char		*p;
-	int len;
+	char			lst[16];
+	char			*p;
+	int				len;
 
 	j = (unsigned long)ptr;
 	p = &lst[16];
