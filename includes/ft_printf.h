@@ -6,7 +6,7 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/09 11:12:41 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/18 13:25:47 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 11:34:08 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 typedef struct		s_format
 {
 	char			flag;
+	char			sign;
+	char			prefix;
 	unsigned int	width;
 	unsigned int	precision;
 	char			*length;
@@ -48,19 +50,18 @@ char				*get_length(const char **str);
 void				handle_length(va_list ap, t_format *form, char **tmp);
 static void			padding_right(char **tmp, char *from, int width, char c);
 static void			padding_left(char **tmp, char *from, int width, char c);
-static void			padding(char **tmp, char *str, int width,
-									char simbol, char c);
+static void			allocate_mem_pointer(char **str, int len);
+void				set_pointer_len(char **p, int *len, t_format *form);
 char				*pointer(char *pointer, t_format *form, int len);
 void				get_pointer(char **tmp, void *ptr, t_format *form);
 void				handle_precision(t_format *form, char **tmp);
 int					get_base(char c);
-void				add_prefix(char **tmp, char **str, char spec,
-							int is_negative);
+void				add_prefix(char **tmp, char **str, t_format *form);
 static void			print_char(char c, int specifier);
 static void			print_str(char *str, int specifier);
 void				flags_slector(t_format *form, const char **str);
 void				handle_struct(const char **format, t_format *form,
-							va_list ap);
+					va_list ap);
 void				reset_struct(t_format *form);
 int					ft_wcharlen(wchar_t wchar);
 size_t				ft_wstrlen(wchar_t *ws);

@@ -6,7 +6,7 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:12:25 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/18 12:52:40 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 12:11:43 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,23 @@
 
 void		flags_slector(t_format *form, const char **str)
 {
-	char flag;
 	char c;
 
-	flag = 0;
-	while (is_in_str("+-0# ", *(*str)))
+	while (is_in_str("+-0# ", *(*str)) && *(*str))
 	{
 		c = *(*str);
 		if (c == '+')
-			flag = '+';
-		else if (c == ' ' && flag != '+')
-			flag = ' ';
+			form->sign = '+';
+		else if (c == ' ' && form->sign != '+')
+			form->sign = ' ';
 		else if (c == '-')
-			flag = '-';
-		else if (c == '0' && flag != '-')
-			flag = '0';
+			form->flag = '-';
+		else if (c == '0' && form->flag != '-')
+			form->flag = '0';
 		else if (c == '#')
-			flag = '#';
+			form->prefix = '#';
 		(*str)++;
 	}
-	form->flag = flag;
 }
 
 char		*get_num(const char **str, int *dot)
@@ -92,6 +89,8 @@ void		handle_struct(const char **format, t_format *form, va_list ap)
 void		reset_struct(t_format *form)
 {
 	form->flag = 0;
+	form->sign = 0;
+	form->prefix = 0;
 	form->width = 0;
 	form->precision = 0;
 	form->length = 0;

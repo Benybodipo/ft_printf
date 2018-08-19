@@ -6,7 +6,7 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:29:00 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/18 12:44:01 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 12:01:17 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,5 @@ void	handle_precision(t_format *form, char **tmp)
 		}
 	}
 	else
-		padding(tmp, *tmp, form->precision, '+', '0');
+		padding_right(tmp, *tmp, form->precision, '0');
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "includes/ft_printf.h"
 
 char *ft_strdup(const char *str)
 {
@@ -27,30 +27,27 @@ char *ft_strdup(const char *str)
 	return (new);
 }
 
-void flags_slector(t_format *form, const char **str)
+/*void flags_slector(t_format *form, const char **str)
 {
-	char flag;
 	char c;
 
-	flag = 0;
-	while(is_in_str("+-0# ", *(*str)))
+	while(is_in_str("+-0# ", *(*str)) && *(*str))
 	{
 		c = *(*str);
 		if (c == '+')
-			flag = '+';
-		else if (c == ' ' && flag !=  '+')
-			flag = ' ';
+			form->sign = '+';
+		else if (c == ' ' && form->sign !=  '+')
+			form->sign = ' ';
 		else if (c == '-')
-			flag = '-';
-		else if (c == '0' && flag != '-')
-			flag = '0';
+			form->flag = '-';
+		else if (c == '0' && form->flag != '-')
+			form->flag = '0';
 		else if (c == '#')
-			flag = '#';
+			form->prefix = '#';
 		(*str)++;
 	}
-	form->flag = flag;
 }
-
+*/
 char *preppend(char *tmp, char *to_insert)
 {
 	char *new;
@@ -94,13 +91,15 @@ static void print_str(char *str, int specifier)
 	}
 }
 
-static void padding_right(char **tmp, char *from, int width, char c)
+/*static void padding_right(char **tmp, char *from, int width, char c)
 {
 	int i;
+	int j;
 	char *str;
 	char *temp;
 
 	i = 0;
+	j = 0;
 	temp = ft_strdup(from);
 	width = (width >= ft_strlen(from)) ? width : ft_strlen(from);
 	str = malloc(sizeof(char) * (width + 1));
@@ -109,18 +108,17 @@ static void padding_right(char **tmp, char *from, int width, char c)
 		str[i] = c;
 		i++;
 	}
-	while (*temp && i < width)
+	while (temp[j] && i < width)
 	{
-		str[i] = *temp;
+		str[i] = temp[j];
 		i++;
-		temp++;
+		j++;
 	}
 	str[i] = '\0';
-	*tmp = str;
+	*tmp = ft_strdup(str);
 	free(str);
-
 }
-
+*/
 static void padding_left(char **tmp, char *from, int width, char c)
 {
 	int i;
@@ -145,17 +143,6 @@ static void padding_left(char **tmp, char *from, int width, char c)
 	free(str);
 }
 
-static void padding(char **tmp, char *str, unsigned int width, char simbol, char c)
-{
-	int len;
-
-	if (width <= ft_strlen(str))
-		*tmp = str;
-	else if (simbol == '-')
-		padding_left(tmp, str,  width, c);
-	else if (!simbol || is_in_str("+#0 ", simbol))
-		padding_right(tmp, str,  width, c);
-}
 int ft_strcmp(char *str1, char *str2)
 {
 	while (*str1 && *str2 && (*str1 == *str2))
@@ -384,6 +371,13 @@ int get_base(char c)
 }
 
 
+/*static void allocate_mem_pointer(char **str, int len)
+{
+	*str =  malloc(sizeof(char) * (1 + len));
+	(*str)[0] = '0';
+	(*str)[1] = 'x';
+}
+
 char *pointer(char *pointer, t_format *form, int len)
 {
 	char *str;
@@ -393,9 +387,7 @@ char *pointer(char *pointer, t_format *form, int len)
 
 	precision = (form->precision > len) ? form->precision : len;
 	width = (form->width && !form->precision) ? form->width : precision;
-	str =  malloc(sizeof(char) * (1 + len));
-	str[0] = '0';
-	str[1] = 'x';
+	allocate_mem_pointer(&str, len);
 	i = 2;
 	if (form->flag == '0' || form->precision)
 	{
@@ -414,6 +406,21 @@ char *pointer(char *pointer, t_format *form, int len)
 	str[i] = '\0';
 	return (str);
 }
+
+void set_pointer_len(char **p, int *len, t_format *form)
+{
+	int length;
+	int prec;
+
+	length = ft_strlen(*p);
+	prec = form->precision;
+	if (form->flag == '0' && !prec)
+		length = (length >= (form->width - 2)) ? length : (form->width - 2);
+	else
+		length = (prec > length) ? (form->precision + 2) : (length + 2);
+	*len  = length;
+}
+
 void get_pointer(char **tmp, void *ptr, t_format *form)
 {
 	unsigned long	j;
@@ -432,15 +439,14 @@ void get_pointer(char **tmp, void *ptr, t_format *form)
 	}
 	while (*p == '0')
 		++p;
-	if (form->flag == '0' && !form->precision)
-		len = (ft_strlen(p) >= (form->width - 2)) ? ft_strlen(p) : (form->width - 2);
-	else
-		len = (form->precision > ft_strlen(p)) ? (form->precision + 2) : (ft_strlen(p) + 2);
+	set_pointer_len(&p, &len, form);
 	if (form->flag == '0')
 		*tmp = pointer(p, form, len);
-	if (is_in_str("+-", form->flag) || !form->flag)
-		padding(tmp, pointer(p, form, len), form->width, form->flag, ' ');
-}
+	if (form->flag == '-')
+		padding_left(tmp, pointer(p, form, len), form->width, ' ');
+	else
+		padding_right(tmp, pointer(p, form, len), form->width, ' ');
+}*/
 
 /*=======HANDLE WCHAR_T & WCHAR_T=========*/
 
@@ -581,7 +587,7 @@ void handle_length(va_list ap, t_format *form, char **tmp)
 		*tmp = va_arg(ap, char *);
 }
 
-void handle_precision(t_format *form, char **tmp)
+/*void handle_precision(t_format *form, char **tmp)
 {
 	if (is_in_str("sS", form->specifier))
 	{
@@ -604,72 +610,93 @@ void handle_precision(t_format *form, char **tmp)
 		}
 	}
 	else
-		padding(tmp, *tmp, form->precision, '+', '0');
-}
+		padding_right(tmp, *tmp, form->precision, '0');
+}*/
 
-void add_prefix(char **tmp, char **str, char spec, int is_negative)
+/*======= CHANGES IN ADD PREFIX ========*/
+/*
+void add_prefix(char **tmp, char **str, t_format *form)
 {
   char *prefix;
 	char *temp;
+	char spec;
+	int is_negative;
 
 	temp = ft_strdup(*tmp);
+	spec = form->specifier;
+	is_negative = form->is_negative;
   if (spec == 'x' || spec == 'X')
     prefix = "0x";
   else if (spec == 'o' || spec == 'O')
     prefix = "0";
 	else if (is_in_str("idD", spec) && is_negative)
 		prefix = "-";
+	else if (!is_negative && is_in_str("idD", spec) && form->sign == ' ')
+		prefix = " ";
 	else
 		prefix = "+";
 	*tmp = preppend(temp, prefix);
 	*str = preppend(temp, prefix); // Be aware
 }
-
-void add_zero(char **tmp, char *str, t_format *form)
+*/
+/*======= CHANGES IN ADD PREFIX ========*/
+/*void add_zero(char **tmp, char *str, t_format *form)
 {
 	int len;
 	int add_prefix;
 	int prefix_len;
 	int width;
+	char spec;
 
 	prefix_len = 0;
-	if (is_in_str("xXoO", form->specifier) && form->flag == '#')
+	spec = form->specifier;
+	if (is_in_str("xXoO", spec) && form->prefix == '#')
 		add_prefix = 1;
-	if (is_in_str("idD", form->specifier) && (form->flag == '+' || form->is_negative))
+	if (is_in_str("idD", spec) && (form->sign == '+' || form->is_negative))
 		add_prefix = 1;
-	if (is_in_str("xXoO", form->specifier) && add_prefix)
-	 	prefix_len = (is_in_str("xX", form->specifier)) ? 2 : 1;
-	if (is_in_str("idD", form->specifier) && add_prefix)
+	if (is_in_str("xXoO", spec) && add_prefix)
+	 	prefix_len = (is_in_str("xX", spec)) ? 2 : 1;
+	if (is_in_str("idD", spec) && add_prefix)
 	 	prefix_len = 1;
-
 	len = ft_strlen(*tmp);
 	width = form->width - prefix_len;
-	if (width > len && !form->precision && form->specifier != 'p')
-		padding(tmp, str, width, form->flag, '0');
-	else if (width > len && form->precision && form->specifier != 'p')
-		padding(tmp, str, width, form->flag, ' ');
+	if (width > len && !form->precision && spec != 'p')
+		padding_right(tmp, str, width, '0');
+	else if (width > len && form->precision && spec != 'p')
+		padding_right(tmp, str, width, ' ');
 }
-
-void handle_format(t_format *form, va_list ap)
+*/
+/*======= CHANGES IN HADLE FORMAT ========*/
+/*void handle_format(t_format *form, va_list ap)
 {
 	char *tmp;
 	char *str;
+	char spec;
+	int  prec;
 
 	handle_length(ap, form, &tmp);
+	spec = form->specifier;
+	prec = form->precision;
 	if (form->precision)
 		handle_precision(form, &tmp);
 	str = tmp;
-	if (!form->precision && form->flag == '0' && is_in_str("xXuUoOidD", form->specifier) && form->width)
+	if (!prec && form->flag == '0' && is_in_str("xXuUoOidD", spec) && form->width)
 		add_zero(&tmp, str, form);
-	if ((is_in_str("#+", form->flag) || form->is_negative) && is_in_str("xXuUoOidD", form->specifier))
-		add_prefix(&tmp, &str, form->specifier, form->is_negative);
-	if (form->width && form->flag != '0')
-		padding(&tmp, str, form->width, form->flag, ' ');
-	if (form->flag == ' ' && is_in_str("xXuUoOpidD", form->specifier))
-		write(1, " ", 1); //Create a function to add a space
+	if (form->prefix && is_in_str("xXoO", form->specifier))
+		add_prefix(&tmp, &str, form);
+	if (form->sign && is_in_str("idD", spec) && !form->is_negative)
+		add_prefix(&tmp, &str, form);
+	if (form->flag && form->is_negative && is_in_str("idD", spec))
+		add_prefix(&tmp, &str, form);
+	if (form->width && form->flag == '-')
+		padding_left(&tmp, str, form->width, ' ');
+	else
+		padding_right(&tmp, str, form->width, ' ');
 	print_str(tmp, form->specifier);
 	str = NULL;
 }
+*/
+/*======= CHANGES IN HADLE FORMAT ========*/
 void handle_struct(const char **format, t_format *form, va_list ap)
 {
 	int percent;
@@ -697,16 +724,18 @@ void handle_struct(const char **format, t_format *form, va_list ap)
 	handle_format(form, ap);
 }
 
-void reset_struct(t_format *form)
+/*void reset_struct(t_format *form)
 {
 	form->flag = 0;
+	form->sign = 0;
+	form->prefix = 0;
 	form->width = 0;
 	form->precision = 0;
 	form->length = 0;
 	form->specifier = 0;
 	form->is_negative = 0;
 }
-
+*/
 void ft_printf(const char* format, ...)
 {
   va_list args;
@@ -734,12 +763,10 @@ void ft_printf(const char* format, ...)
 
 int	main()
 {
-	int num = -34563626;
-	wchar_t *str = L"Hola a todos";
-	wchar_t i = L'x';
+	int neg = -345;
+	int pos = 345;
 
-	ft_printf("%15ls %05i\n", str, 23);
-	printf("%15ls %05i\n", str, 23);
-
+	printf("% 010p\n", pos);
+	ft_printf("% 010p\n", pos);
 	return(0);
 }
