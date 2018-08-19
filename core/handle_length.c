@@ -101,8 +101,10 @@ void			handle_length(va_list ap, t_format *form, char **tmp)
 {
 	char spec;
 	char c[2];
+	char *length;
 
 	spec = form->specifier;
+	length = form->length;
 	if (is_in_str("dDi", spec))
 		handle_is_negative(ap, form, tmp);
 	else if (is_in_str("uoOxXb", spec))
@@ -111,14 +113,14 @@ void			handle_length(va_list ap, t_format *form, char **tmp)
 		get_pointer(tmp, va_arg(ap, void *), form);
 	else if (is_in_str("cC", spec))
 	{
-		if (ft_strcmp("l", form->length))
+		if (length && ft_strcmp("l", length))
 			c[0] = ft_wchartochar(va_arg(ap, wchar_t));
 		else
 			c[0] = ft_atoi(ft_uitoa_base(get_signed_num(ap, form), 10));
 		c[1] = '\0';
-		*tmp = c;
+		*tmp = ft_strdup(c);
 	}
-	else if (is_in_str("sS", spec) && ft_strcmp(form->length, "l"))
+	else if (length && is_in_str("sS", spec) && ft_strcmp(length, "l"))
 		*tmp = ft_wstrtostr(va_arg(ap, wchar_t*));
 	else
 		*tmp = va_arg(ap, char *);

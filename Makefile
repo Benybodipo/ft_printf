@@ -23,19 +23,19 @@ CORE =	add_zero.c ft_printf.c handle_format.c handle_length.c \
 				handle_padding.c handle_pointers.c handle_precision.c handle_prefix.c \
 				handle_printing.c handle_struct.c handle_wchart.c wchart_len.c \
 
-COMP = $(addprefix core/, $(CORE)) $(addprefix utils/, $(UTILS))
+COMP = $(addprefix ./core/, $(CORE)) $(addprefix ./utils/, $(UTILS))
 
 all: $(NAME)
 
 $(NAME):
 	@gcc $(FLAGS) -c $(COMP) $(INC)
 	@ar rc $(NAME) *.o
-
+	@ranlib $(NAME)
 clean:
 		@rm -fr *.o
 
 fclean: clean
-		@rm -fr *.a
+		@rm -fr $(NAME)
 
 re: fclean all
 
