@@ -28,7 +28,7 @@ COMP = $(addprefix core/, $(CORE)) $(addprefix utils/, $(UTILS))
 all: $(NAME)
 
 $(NAME):
-	@gcc $(FLAGS) -c $(COMP) #$(INC)
+	@gcc $(FLAGS) -c $(COMP) $(INC)
 	@ar rc $(NAME) *.o
 	@ranlib $(NAME)
 
