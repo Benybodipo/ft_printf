@@ -6,13 +6,13 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:06:25 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/18 13:02:14 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 15:38:58 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	wchar_utf8(wchar_t wc, char *convertion)
+int		wchar_utf8(wchar_t wc, char *convertion)
 {
 	int		len;
 
@@ -40,7 +40,7 @@ static int	wchar_utf8(wchar_t wc, char *convertion)
 	return (len);
 }
 
-static int	ft_wchartochar(wchar_t wc)
+int		ft_wchartochar(wchar_t wc)
 {
 	int		len;
 	char	tab[4];
@@ -49,11 +49,10 @@ static int	ft_wchartochar(wchar_t wc)
 	return (tab[0]);
 }
 
-char		*ft_wstrtostr(wchar_t *wstr)
+char	*ft_wstrtostr(wchar_t *wstr)
 {
 	char	*new;
 	int		i;
-	int		c;
 	int		len;
 
 	if (!wstr)

@@ -63,7 +63,6 @@ intmax_t		get_signed_num(va_list args, t_format *form)
 char			*get_length(const char **str)
 {
 	int		i;
-	int		j;
 	char	*len;
 
 	i = 0;
@@ -101,7 +100,6 @@ void			handle_is_negative(va_list ap, t_format *form, char **tmp)
 void			handle_length(va_list ap, t_format *form, char **tmp)
 {
 	char spec;
-	char *len;
 	char c[2];
 
 	spec = form->specifier;
@@ -120,7 +118,7 @@ void			handle_length(va_list ap, t_format *form, char **tmp)
 		c[1] = '\0';
 		*tmp = c;
 	}
-	else if (is_in_str("sS", form->spec) && ft_strcmp(form->length, "l"))
+	else if (is_in_str("sS", spec) && ft_strcmp(form->length, "l"))
 		*tmp = ft_wstrtostr(va_arg(ap, wchar_t*));
 	else
 		*tmp = va_arg(ap, char *);

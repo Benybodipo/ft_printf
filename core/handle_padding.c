@@ -6,13 +6,13 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:31:10 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/19 11:51:27 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 15:32:54 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void		padding_right(char **tmp, char *from, int width, char c)
+void		padding_right(char **tmp, char *from, int width, char c)
 {
 	int		i;
 	int		j;
@@ -22,9 +22,9 @@ static void		padding_right(char **tmp, char *from, int width, char c)
 	i = 0;
 	j = 0;
 	temp = ft_strdup(from);
-	width = (width >= ft_strlen(from)) ? width : ft_strlen(from);
+	width = (width >= (int)ft_strlen(from)) ? width : ft_strlen(from);
 	str = malloc(sizeof(char) * (width + 1));
-	while (i < (width - ft_strlen(from)))
+	while (i < (int)(width - ft_strlen(from)))
 	{
 		str[i] = c;
 		i++;
@@ -40,13 +40,13 @@ static void		padding_right(char **tmp, char *from, int width, char c)
 	free(str);
 }
 
-static void		padding_left(char **tmp, char *from, int width, char c)
+void		padding_left(char **tmp, char *from, int width, char c)
 {
 	int		i;
 	char	*str;
 
 	i = 0;
-	width = (width >= ft_strlen(from)) ? width : ft_strlen(from);
+	width = (width >= (int)ft_strlen(from)) ? width : (int)ft_strlen(from);
 	str = malloc(sizeof(char) * (width + 1));
 	while (*from)
 	{

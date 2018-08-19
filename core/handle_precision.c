@@ -6,7 +6,7 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:29:00 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/19 12:01:17 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 15:34:16 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	handle_precision(t_format *form, char **tmp)
 {
-	char	*str;
-	int		i;
+	char			*str;
+	unsigned int	i;
 
 	if (is_in_str("sS", form->specifier))
 	{

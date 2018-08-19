@@ -10,24 +10,33 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ft_printf.a
-SRC = *.c
-CC = gcc
-OBJ = *.o
-FLAGS =  -Wall -Wextra -Werror -I
-ARC = ar rc
+NAME = libftprintf.a
 
-$(NAME):
-	@$(CC) $(FLAGS) -c $(SRC)
-	@$(ARC) $(NAME) $(OBJ)
-	@ranlib $(NAME)
+FLAGS = -Wall -Wextra -Werror
+
+INC = -I includes/
+
+UTILS = ft_atoi.c ft_itoa_base.c ft_strcmp.c ft_strdup.c ft_strlen.c \
+				ft_uitoa_base.c is_digit.c is_in_str.c preppend.c\
+
+CORE =	add_zero.c ft_printf.c handle_format.c handle_length.c \
+				handle_padding.c handle_pointers.c handle_precision.c handle_prefix.c \
+				handle_printing.c handle_struct.c handle_wchart.c wchart_len.c \
+
+COMP = $(addprefix core/, $(CORE)) $(addprefix utils/, $(UTILS))
 
 all: $(NAME)
 
+$(NAME):
+	@gcc $(FLAGS) -c $(COMP) $(INC)
+	@ar rc $(NAME) *.o
+
 clean:
-	@/bin/rm -f *.o
+		@rm -fr *.o
 
 fclean: clean
-	@/bin/rm $(NAME)
+		@rm -fr *.a
 
 re: fclean all
+
+.PHONY: all clean fclean

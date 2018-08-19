@@ -6,27 +6,27 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:08:45 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/19 11:54:47 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/19 15:36:56 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void		allocate_mem_pointer(char **str, int len)
+void		allocate_mem_pointer(char **str, int len)
 {
 	*str = malloc(sizeof(char) * (1 + len));
 	(*str)[0] = '0';
 	(*str)[1] = 'x';
 }
 
-char			*pointer(char *pointer, t_format *form, int len)
+char		*pointer(char *pointer, t_format *form, int len)
 {
 	char	*str;
-	int		i;
+	size_t	i;
 	int		width;
 	int		precision;
 
-	precision = (form->precision > len) ? form->precision : len;
+	precision = ((int)form->precision > len) ? (int)form->precision : len;
 	width = (form->width && !form->precision) ? form->width : precision;
 	allocate_mem_pointer(&str, len);
 	i = 2;
@@ -48,26 +48,26 @@ char			*pointer(char *pointer, t_format *form, int len)
 	return (str);
 }
 
-void			set_pointer_len(char **p, int *len, t_format *form)
+void		set_pointer_len(char **p, unsigned int *len, t_format *form)
 {
-	int length;
-	int prec;
+	unsigned int	length;
+	int				prec;
 
 	length = ft_strlen(*p);
 	prec = form->precision;
 	if (form->flag == '0' && !prec)
 		length = (length >= (form->width - 2)) ? length : (form->width - 2);
 	else
-		length = (prec > length) ? (form->precision + 2) : (length + 2);
+		length = (prec > (int)length) ? (form->precision + 2) : (length + 2);
 	*len = length;
 }
 
-void			get_pointer(char **tmp, void *ptr, t_format *form)
+void		get_pointer(char **tmp, void *ptr, t_format *form)
 {
 	unsigned long	j;
 	char			lst[16];
 	char			*p;
-	int				len;
+	unsigned int	len;
 
 	j = (unsigned long)ptr;
 	p = &lst[16];

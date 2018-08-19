@@ -63,7 +63,6 @@ void		handle_struct(const char **format, t_format *form, va_list ap)
 {
 	int		percent;
 	int		dot;
-	char	*str;
 
 	percent = 0;
 	dot = 0;
@@ -83,7 +82,8 @@ void		handle_struct(const char **format, t_format *form, va_list ap)
 			form->specifier = *(*format);
 		(*format)++;
 	}
-	handle_format(form, ap);
+	if (form->specifier)
+		handle_format(form, ap);
 }
 
 void		reset_struct(t_format *form)
