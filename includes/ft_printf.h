@@ -6,7 +6,7 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/09 11:12:41 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/19 15:43:50 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/22 11:55:14 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <wchar.h>
+# include <inttypes.h>
 
 typedef struct		s_format
 {
@@ -28,6 +29,7 @@ typedef struct		s_format
 	unsigned int	width;
 	unsigned int	precision;
 	char			*length;
+	int				ilenth;
 	char			specifier;
 	int				is_negative;
 }					t_format;
@@ -42,7 +44,8 @@ int					ft_strcmp(char *str1, char *str2);
 char				*ft_strdup(const char *str);
 char				*preppend(char *tmp, char *to_insert);
 
-void				ft_printf(const char *format, ...);
+int					ft_printf(const char *format, ...);
+void				print_percent(const char **format);
 void				handle_format(t_format *form, va_list ap);
 uintmax_t			get_unsigned_num(va_list args, t_format *form);
 intmax_t			get_signed_num(va_list args, t_format *form);
@@ -57,9 +60,10 @@ char				*pointer(char *pointer, t_format *form, int len);
 void				get_pointer(char **tmp, void *ptr, t_format *form);
 void				handle_precision(t_format *form, char **tmp);
 int					get_base(char c);
-void				add_prefix(char **tmp, char **str, t_format *form);
+char				*add_prefix(char *tmp, t_format *form);
+void				handle_prefix(char **tmp, t_format *form);
 void				print_char(char c, int specifier);
-void				print_str(char *str, int specifier);
+void				print_str(char *str, t_format *form);
 void				flags_slector(t_format *form, const char **str);
 void				handle_struct(const char **format, t_format *form,
 					va_list ap);
@@ -70,7 +74,7 @@ size_t				ft_wbytelen(wchar_t *ws);
 int					wchar_utf8(wchar_t wc, char *convertion);
 int					ft_wchartochar(wchar_t wc);
 char				*ft_wstrtostr(wchar_t *wstr);
-void				add_zero(char **tmp, char *str, t_format *form);
+void				add_zero(char **tmp, t_format *form);
 char				*get_num(const char **str, int *dot);
 void				handle_is_negative(va_list ap, t_format *form, char **tmp);
 

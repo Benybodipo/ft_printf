@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-void	add_zero(char **tmp, char *str, t_format *form)
+void	add_zero(char **tmp, t_format *form)
 {
 	int		len;
 	int		add_prefix;
@@ -33,7 +33,7 @@ void	add_zero(char **tmp, char *str, t_format *form)
 	len = ft_strlen(*tmp);
 	width = form->width - prefix_len;
 	if (width > len && !form->precision && spec != 'p')
-		padding_right(tmp, str, width, '0');
+		padding_right(tmp, ft_strdup(*tmp), width, '0');
 	else if (width > len && form->precision && spec != 'p')
-		padding_right(tmp, str, width, ' ');
+		padding_right(tmp, ft_strdup(*tmp), width, ' ');
 }

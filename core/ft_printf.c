@@ -6,17 +6,28 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/09 10:22:59 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/18 11:44:00 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/22 11:54:23 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void			ft_printf(const char *format, ...)
+void	print_percent(const char **format)
+{
+	const char *tmp;
+
+	tmp = *format;
+	if (*tmp == '%' && *(tmp + 1) == '%')
+		(*format)++;
+}
+
+int		ft_printf(const char *format, ...)
 {
 	va_list		args;
 	t_format	form;
+	int			i;
 
+	i = 0;
 	va_start(args, format);
 	while (*format)
 	{
@@ -25,14 +36,16 @@ void			ft_printf(const char *format, ...)
 			reset_struct(&form);
 			format++;
 			handle_struct(&format, &form, args);
+			i = form.ilenth;
 		}
 		else
 		{
-			if (*format == '%' && *(format + 1) == '%')
-				format++;
+			print_percent(&format);
 			write(1, &(*format), 1);
 			format++;
+			i++;
 		}
 	}
 	va_end(args);
+	return (i);
 }

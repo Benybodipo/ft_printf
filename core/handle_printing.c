@@ -19,11 +19,12 @@ void	print_char(char c, int specifier)
 	write(1, &c, 1);
 }
 
-void	print_str(char *str, int specifier)
+void	print_str(char *str, t_format *form)
 {
 	while (*str)
 	{
-		print_char(*str, specifier);
+		print_char(*str, form->specifier);
 		str++;
+		form->ilenth++;
 	}
 }

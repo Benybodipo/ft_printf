@@ -96,4 +96,5 @@ void		reset_struct(t_format *form)
 	form->length = 0;
 	form->specifier = 0;
 	form->is_negative = 0;
+	form->ilenth = 0;
 }

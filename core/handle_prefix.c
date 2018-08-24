@@ -6,7 +6,7 @@
 /*   By: besteba <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/17 12:20:03 by besteba           #+#    #+#             */
-/*   Updated: 2018/08/19 12:09:17 by besteba          ###   ########.fr       */
+/*   Updated: 2018/08/22 11:46:17 by besteba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,14 @@ int		get_base(char c)
 	return (10);
 }
 
-void	add_prefix(char **tmp, char **str, t_format *form)
+char	*add_prefix(char *tmp, t_format *form)
 {
 	char	*prefix;
-	char	*temp;
 	char	spec;
 	int		is_negative;
 
-	temp = ft_strdup(*tmp);
 	spec = form->specifier;
+	prefix = NULL;
 	is_negative = form->is_negative;
 	if (spec == 'x' || spec == 'X')
 		prefix = "0x";
@@ -41,8 +40,20 @@ void	add_prefix(char **tmp, char **str, t_format *form)
 		prefix = "-";
 	else if (!is_negative && is_in_str("idD", spec) && form->sign == ' ')
 		prefix = " ";
-	else
+	else if (!is_negative && is_in_str("idD", spec) && form->sign == '+')
 		prefix = "+";
-	*tmp = preppend(temp, prefix);
-	*str = preppend(temp, prefix);
+	return (preppend(ft_strdup(tmp), prefix));
+}
+
+void	handle_prefix(char **tmp, t_format *form)
+{
+	char spe;
+
+	spe = form->specifier;
+	if (form->prefix && is_in_str("xXoO", form->specifier))
+		*tmp = add_prefix(*tmp, form);
+	if (form->sign && is_in_str("idD", spe) && !form->is_negative)
+		*tmp = add_prefix(*tmp, form);
+	if (form->is_negative && is_in_str("idD", spe))
+		*tmp = preppend(*tmp, "-");
 }

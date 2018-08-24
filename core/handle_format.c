@@ -15,7 +15,6 @@
 void	handle_format(t_format *form, va_list ap)
 {
 	char	*tmp;
-	char	*str;
 	char	spe;
 	int		prec;
 
@@ -24,19 +23,16 @@ void	handle_format(t_format *form, va_list ap)
 	prec = form->precision;
 	if (form->precision)
 		handle_precision(form, &tmp);
-	str = tmp;
 	if (!prec && form->flag == 48 && is_in_str("xXuUoOidD", spe) && form->width)
-		add_zero(&tmp, str, form);
-	if (form->prefix && is_in_str("xXoO", form->specifier))
-		add_prefix(&tmp, &str, form);
-	if (form->sign && is_in_str("idD", spe) && !form->is_negative)
-		add_prefix(&tmp, &str, form);
-	if (form->flag && form->is_negative && is_in_str("idD", spe))
-		add_prefix(&tmp, &str, form);
+		add_zero(&tmp, form);
+	handle_prefix(&tmp, form);
 	if (form->width && form->flag == '-')
-		padding_left(&tmp, str, form->width, ' ');
-	else
-		padding_right(&tmp, str, form->width, ' ');
-	print_str(tmp, form->specifier);
-	str = NULL;
+	{
+		if (form->flag == '-')
+			padding_left(&tmp, tmp, form->width, ' ');
+		else
+			padding_right(&tmp, tmp, form->width, ' ');
+	}
+	print_str(tmp, form);
+	tmp = NULL;
 }
